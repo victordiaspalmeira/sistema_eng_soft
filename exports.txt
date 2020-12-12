@@ -1,3 +1,0 @@
-$env:FLASK_APP = "monitor"    
-$env:FLASK_ENV = "development"
-flask run
