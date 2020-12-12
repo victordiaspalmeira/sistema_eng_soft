@@ -18,7 +18,7 @@ def get_user(username):
     conn = create_connection('engsoft.db')
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
-    command = f"SELECT * FROM users WHERE username = '{username}'"
+    command = f"SELECT * FROM USER WHERE username = '{username}'"
     c.execute(command)
 
     return c.fetchone()
@@ -39,6 +39,6 @@ def create_user(user_dict):
     )
     c.execute(command, values)    
     conn.commit()
-    
+
     return 
 
