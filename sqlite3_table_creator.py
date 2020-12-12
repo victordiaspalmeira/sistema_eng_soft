@@ -39,6 +39,7 @@ def create_debug_user(conn):
     return 
 
 if __name__ == "__main__":
+    #Criação de tabela e usuário debug
     conn = create_connection('engsoft.db')
     create_table_USER(conn)
     create_debug_user(conn)
