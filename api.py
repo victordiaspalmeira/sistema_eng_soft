@@ -24,13 +24,13 @@ def login():
         conn = create_connection('engsoft.db')
         conn.row_factory = sqlite3.Row
         c = conn.cursor()
-        command = f"SELECT * FROM users WHERE username = '{username}'"
+        command = f"SELECT * FROM USER WHERE username = '{username}'"
         c.execute(command)
-        user = get_user
+        user = get_user(username)
 
         if user is None:
             error = 'INCORRECT USERNAME'
-        elif not check_password_has(user['password'], password):
+        elif not check_password_hash(user['password'], password):
             error = 'INCORRECT PASSWORD'
 
     if error is None:

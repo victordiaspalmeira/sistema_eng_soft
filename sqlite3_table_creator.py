@@ -1,6 +1,7 @@
 import sqlite3 
 from sqlite3 import Error
 from sqlite3_manager import create_connection, create_user
+from werkzeug.security import generate_password_hash
 def create_table_USER(conn):
     command = """ CREATE TABLE IF NOT EXISTS USER (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -27,7 +28,7 @@ def create_debug_user(conn):
     user_dict = {
         'inst_id': -1,
         'username': 'debug',
-        'password': 'debug',
+        'password': generate_password_hash('debug'),
         'nome': 'debug',
         'sobrenome': 'debug',
         'telefone': '71 99999999',

@@ -12,7 +12,7 @@ def create_connection(db_file):
         conn = sqlite3.connect(db_file)
         return conn
     except Error as e:
-        print(e)
+        print('\n\n\n\n\n\n\nERROR CONNECTION', e)
 
 def get_user(username):
     conn = create_connection('engsoft.db')
