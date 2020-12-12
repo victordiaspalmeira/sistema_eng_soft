@@ -23,7 +23,7 @@ def login():
     if error is None:
         conn = create_connection('engsoft.db')
         conn.row_factory = sqlite3.Row
-        c = c.cursor()
+        c = conn.cursor()
         command = f"SELECT * FROM users WHERE username = '{username}'"
         c.execute(command)
         user = get_user
@@ -34,6 +34,7 @@ def login():
             error = 'INCORRECT PASSWORD'
 
     if error is None:
+        #Dicionário
         return {'id': user['id'], 'cargo': user['cargo']}
     
 
