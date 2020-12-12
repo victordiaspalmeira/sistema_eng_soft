@@ -23,7 +23,7 @@ def login():
     if error is None:
         conn = create_connection('engsoft.db')
         conn.row_factory = sqlite3.Row
-        cursor()
+        c = c.cursor()
         command = f"SELECT * FROM users WHERE username = '{username}'"
         c.execute(command)
         user = get_user
