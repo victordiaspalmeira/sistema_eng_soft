@@ -43,7 +43,7 @@ def create_user(user_dict):
     values = (
         user_dict['inst_id'],
         user_dict['username'],
-        user_dict['password'],
+        generate_password_hash(user_dict['password']),
         user_dict['nome'],
         user_dict['sobrenome'],
         user_dict['telefone'],
