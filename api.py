@@ -6,15 +6,21 @@ from sqlite3_manager import (
 )
 
 from werkzeug.security import check_password_hash, generate_password_hash
-app = flask.Flask(__name__)
-app.config["DEBUG"] = True
 
 from flask import (
     request
 )
+from flask_cors import (
+    CORS, cross_origin
+)
+
+app = flask.Flask(__name__)
+CORS(app, support_credentials=True)
+app.config["DEBUG"] = True
 
 #LOGIN
 @app.route('/login', methods=('GET','POST'))
+@cross_origin(supports_credentials=True)
 def login():
     if request.method == 'POST':
         username = request.form['username']
@@ -42,11 +48,12 @@ def login():
             #Dicionário
             return {'id': user['id'], 'cargo': user['cargo']}
         else:
-            return error, 403
+            return {'message': error}, 403
     else:
         return 'BAD LOGIN', 403
 
 @app.route('/register_user', methods=('GET','POST'))
+@cross_origin(supports_credentials=True)
 def register_user():
     if request.method == 'POST':
         user_dict = {
@@ -81,12 +88,13 @@ def register_user():
                 return 'REGISTERED'
             except Exception as e:
                 print('EXCEPTION', e)
-        return error, 403
+        return {'message': error}, 403
 
     else:
         return 'BAD REGISTER'  
 
 @app.route('/update_user', methods=('GET','POST'))
+@cross_origin(supports_credentials=True)
 def _update_user():
     if request.method == 'POST':
         user_dict = {
@@ -120,12 +128,13 @@ def _update_user():
                 return 'UPDATE'
             except Exception as e:
                 print('EXCEPTION', e)
-        return error, 403
+        return {'message': error}, 403
 
     else:
         return 'BAD UPDATE'
 
 @app.route('/register_inst', methods=('GET','POST'))
+@cross_origin(supports_credentials=True)
 def register_inst():
     if request.method == 'POST':
         inst_dict = {
@@ -158,12 +167,13 @@ def register_inst():
                 return 'REGISTERED'
             except Exception as e:
                 print('EXCEPTION', e)
-        return error, 403
+        return {'message': error}, 403
 
     else:
-        return 'BAD REGISTER'  
+            return {'message': 'BAD REGISTER'}, 403
 
 @app.route('/update_inst', methods=('GET','POST'))
+@cross_origin(supports_credentials=True)
 def _update_inst():
     if request.method == 'POST':
         inst_dict = {
@@ -198,12 +208,13 @@ def _update_inst():
                 return 'UPDATE'
             except Exception as e:
                 print('EXCEPTION', e)
-        return error, 403
+        return {'message': error}, 403
 
     else:
         return 'BAD UPDATE'
 
 @app.route('/register_curs', methods=('GET','POST'))
+@cross_origin(supports_credentials=True)
 def register_curs():
     if request.method == 'POST':
         curs_dict = {
@@ -239,12 +250,13 @@ def register_curs():
                 return 'REGISTERED'
             except Exception as e:
                 print('EXCEPTION', e)
-        return error, 403
+        return {'message': error}, 403
 
     else:
         return 'BAD REGISTER'  
 
 @app.route('/update_curs', methods=('GET','POST'))
+@cross_origin(supports_credentials=True)
 def _update_curs():
     if request.method == 'POST':
         curs_dict = {
@@ -280,7 +292,7 @@ def _update_curs():
                 return 'UPDATE'
             except Exception as e:
                 print('EXCEPTION', e)
-        return error, 403
+        return {'message': error}, 403
 
     else:
         return 'BAD UPDATE'

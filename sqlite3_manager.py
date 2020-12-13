@@ -23,6 +23,15 @@ def get_user(username):
 
     return c.fetchone()
 
+def get_all_users():
+    conn = create_connection('engsoft.db')
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+    command = f"SELECT * FROM USER"
+    c.execute(command)
+
+    return c.fetchall()
+
 def create_user(user_dict):
     conn = create_connection('engsoft.db')
     c = conn.cursor()
