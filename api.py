@@ -69,6 +69,8 @@ def user(user_id=None):
     cargo, inst_id = aux['cargo'], aux['inst_id']
 
     if request.method == 'PUT': #Cadastro
+        if cargo.lower() not in ['diretor', 'superintendente', 'debug']:
+            return {'message': 'Você não deveria estar aqui.'}, 403
         user_dict = {
             'inst_id': request.form['inst_id'],
             'username': request.form['username'],
@@ -158,6 +160,8 @@ def inst(inst_id=None):
     if _user_id is None:
         return {'message': 'FORBIDDEN'}, 403
     if request.method == 'PUT':
+        if cargo.lower() not in ['dirigente institucional', 'superintendente', 'debug']:
+            return {'message': 'Você não deveria estar aqui.'}, 403
         inst_dict = {
             'inst_type': request.form['inst_type'],
             'visivel': request.form['visivel'],
@@ -249,6 +253,8 @@ def curs():
     cargo = get_user_cargo(_user_id)
 
     if request.method == 'PUT': #Cadastro
+        if cargo.lower() not in ['diretor', 'superintendente', 'debug']:
+        return {'message': 'Você não deveria estar aqui.'}, 403
         curs_dict = {
             'inst_id': request.form['inst_id'],
             'nome': request.form['nome'],
