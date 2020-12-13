@@ -86,7 +86,7 @@ def user():
         if error is None:
             try:
                 create_user(user_dict)
-                return 'REGISTERED'
+                return {'message': 'REGISTERED'}, 200
             except Exception as e:
                 print('EXCEPTION', e)
         return {'message': error}, 403
