@@ -2,7 +2,7 @@ import flask
 import sqlite3
 from sqlite3_manager import (
     create_connection, get_user, create_user, create_inst, create_curs, 
-    update_user, update_inst, update_curs
+    update_user, update_inst, update_curs, get_user
 )
 
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -18,7 +18,7 @@ app = flask.Flask(__name__)
 CORS(app, support_credentials=True)
 app.config["DEBUG"] = True
 
-#LOGIN
+
 @app.route('/login', methods=('GET','POST'))
 @cross_origin(supports_credentials=True)
 def login():
@@ -52,10 +52,14 @@ def login():
     else:
         return 'BAD LOGIN', 403
 
-@app.route('/register_user', methods=('GET','POST'))
+@app.route('/user', methods=('PUT', 'GET','POST'))
 @cross_origin(supports_credentials=True)
-def register_user():
-    if request.method == 'POST':
+def user():
+    conn = create_connection('engsoft.db')
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+
+    if request.method == 'PUT': #Cadastro
         user_dict = {
             'inst_id': request.form['inst_id'],
             'username': request.form['username'],
@@ -66,9 +70,6 @@ def register_user():
             'email': request.form['email'],
             'cargo': request.form['cargo']
         }
-        conn = create_connection('engsoft.db')
-        conn.row_factory = sqlite3.Row
-        c = conn.cursor()
 
         error = None
 
@@ -90,13 +91,20 @@ def register_user():
                 print('EXCEPTION', e)
         return {'message': error}, 403
 
-    else:
-        return 'BAD REGISTER'  
+    elif request.method == 'GET': #Visualização
+        try:
+            username = request.form['username']
+            id = None
+        except:
+            username = None
+            try:
+                id = request.form['id']
+            except:
+                return {'message': 'Insira uma chave para busca de usuário.'}, 403
+        user_data = get_user(username, id)
+        return dict(zip(user_data.keys(), user_data)), 200
 
-@app.route('/update_user', methods=('GET','POST'))
-@cross_origin(supports_credentials=True)
-def _update_user():
-    if request.method == 'POST':
+    elif request.method == 'POST': #Atualização
         user_dict = {
             'id': request.form['id'],
             'inst_id': request.form['inst_id'],
@@ -106,9 +114,6 @@ def _update_user():
             'email': request.form['email'],
             'cargo': request.form['cargo']
         }
-        conn = create_connection('engsoft.db')
-        conn.row_factory = sqlite3.Row
-        c = conn.cursor()
 
         error = None    
 
@@ -131,7 +136,7 @@ def _update_user():
         return {'message': error}, 403
 
     else:
-        return 'BAD UPDATE'
+        return {'message': ''}, 403
 
 @app.route('/register_inst', methods=('GET','POST'))
 @cross_origin(supports_credentials=True)
@@ -139,6 +144,7 @@ def register_inst():
     if request.method == 'POST':
         inst_dict = {
             'inst_type': request.form['inst_type'],
+            'visivel': request.form['visivel'],
             'nome': request.form['nome'],
             'endereco': request.form['endereco'],
             'cidade': request.form['cidade'],
@@ -164,7 +170,7 @@ def register_inst():
         if error is None:
             try:
                 create_inst(inst_dict)
-                return 'REGISTERED'
+                return {'message': 'REGISTERED'}, 200
             except Exception as e:
                 print('EXCEPTION', e)
         return {'message': error}, 403
@@ -179,6 +185,7 @@ def _update_inst():
         inst_dict = {
             'id': request.form['id'],
             'inst_type': request.form['inst_type'],
+            'visivel': request.form['visivel'],
             'nome': request.form['nome'],
             'endereco': request.form['endereco'],
             'cidade': request.form['cidade'],

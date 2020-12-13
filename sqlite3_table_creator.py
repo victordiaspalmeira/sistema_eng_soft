@@ -28,6 +28,7 @@ def create_table_INST(conn):
     command = """ CREATE TABLE IF NOT EXISTS INST (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     inst_type INTEGER,
+                    visivel INTEGER,
                     nome TEXT NOT NULL,
                     endereco TEXT NOT NULL,
                     cidade TEXT NOT NULL,
@@ -63,7 +64,6 @@ def create_table_CURS(conn):
         conn.commit()
     except Error as e:
         print(e)
-
 
 def create_debug_user(conn):
     user_dict = {

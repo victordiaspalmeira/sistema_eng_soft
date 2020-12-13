@@ -14,14 +14,18 @@ def create_connection(db_file):
     except Error as e:
         print('\n\n\n\n\n\n\nERROR CONNECTION', e)
 
-def get_user(username):
+def get_user(username=None, id=None):
     conn = create_connection('engsoft.db')
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
-    command = f"SELECT * FROM USER WHERE username = '{username}'"
+    if username is not None:
+        command = f"SELECT * FROM USER WHERE username = '{username}'"
+    elif id is not None:
+        command = f"SELECT * FROM USER WHERE id = '{id}'"
     c.execute(command)
-
-    return c.fetchone()
+    user = c.fetchone()
+    print(user)
+    return user
 
 def get_all_users():
     conn = create_connection('engsoft.db')
@@ -68,14 +72,24 @@ def get_inst(nome):
     command = f"SELECT * FROM INST WHERE nome = '{username}'"
     c.execute(command)
 
-    return c.fetchone()    
+    return c.fetchone()
+
+def get_all_insts():
+    conn = create_connection('engsoft.db')
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+    command = f"SELECT * FROM INST WHERE visivel = '1'"
+    c.execute(command)
+
+    return c.fetchall()  
 
 def create_inst(inst_dict):
     conn = create_connection('engsoft.db')
     c = conn.cursor()
-    command = f"INSERT INTO INST (inst_type, nome, endereco, cidade, estado, credenciamento, mantenedora) VALUES (?, ?, ?, ?, ?, ?, ?)"
+    command = f"INSERT INTO INST (inst_type, visivel, nome, endereco, cidade, estado, credenciamento, mantenedora) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
     values = (
         inst_dict['inst_type'],
+        inst_dict['visivel'],
         inst_dict['nome'],
         inst_dict['endereco'],
         inst_dict['cidade'],
@@ -91,7 +105,7 @@ def create_inst(inst_dict):
 def update_inst(inst_dict):
     conn = create_connection('engsoft.db')
     c = conn.cursor()
-    command = f"UPDATE INST SET inst_type = '{inst_dict['inst_type']}', nome = '{inst_dict['nome']}', endereco = '{inst_dict['endereco']}', cidade = '{inst_dict['cidade']}', estado = '{inst_dict['estado']}', credenciamento = '{inst_dict['credenciamento']}', mantenedora = '{inst_dict['mantenedora']}' WHERE id = '{inst_dict['id']}'"
+    command = f"UPDATE INST SET inst_type = '{inst_dict['inst_type']}', visivel = '{inst_dict['visivel']}', nome = '{inst_dict['nome']}', endereco = '{inst_dict['endereco']}', cidade = '{inst_dict['cidade']}', estado = '{inst_dict['estado']}', credenciamento = '{inst_dict['credenciamento']}', mantenedora = '{inst_dict['mantenedora']}' WHERE id = '{inst_dict['id']}'"
 
     c.execute(command)    
     conn.commit()
@@ -105,7 +119,8 @@ def get_curs(nome, curs_id):
     command = f"SELECT * FROM CURS WHERE nome = '{username}' AND inst_id = '{inst_id}'"
     c.execute(command)
 
-    return c.fetchone() 
+    return c.fetchall() 
+
 
 def create_curs(curs_dict):
     conn = create_connection('engsoft.db')
