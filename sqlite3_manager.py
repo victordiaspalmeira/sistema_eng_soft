@@ -33,8 +33,11 @@ def get_all_users():
     c = conn.cursor()
     command = f"SELECT * FROM USER"
     c.execute(command)
-
-    return c.fetchall()
+    user_list = list()
+    for user in c.fetchall():
+        print(user)
+        user_list.append(user)
+    return user_list
 
 def create_user(user_dict):
     conn = create_connection('engsoft.db')
@@ -125,7 +128,6 @@ def get_curs(nome, inst_id):
     curs = c.fetchone()
 
     return curs
-
 
 def create_curs(curs_dict):
     conn = create_connection('engsoft.db')

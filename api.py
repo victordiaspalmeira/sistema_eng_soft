@@ -2,7 +2,7 @@ import flask
 import sqlite3
 from sqlite3_manager import (
     create_connection, get_user, create_user, create_inst, create_curs, 
-    update_user, update_inst, update_curs, get_user, get_inst, get_curs
+    update_user, update_inst, update_curs, get_user, get_all_users, get_inst, get_curs
 )
 
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -50,7 +50,7 @@ def login():
         else:
             return {'message': error}, 403
     else:
-        return 'BAD LOGIN', 403
+        return {'message': 'NOT FOUND'}, 404
 
 @app.route('/user', methods=('PUT', 'GET','POST'))
 @cross_origin(supports_credentials=True)
@@ -77,7 +77,7 @@ def user():
             c.execute(f"SELECT * FROM USER WHERE username = '{user_dict['username']}'")
             res = c.fetchall()
             if (len(res)>0):
-                error = 'Nome de usuário não disponível..'
+                error = 'Nome de usuário não disponível.'
         except Exception as e:
             print(e)
             pass
@@ -99,9 +99,19 @@ def user():
             try:
                 id = request.form['id']
             except:
-                return {'message': 'Insira uma chave para busca de usuário.'}, 403
-        user_data = get_user(username, id)
-        return dict(zip(user_data.keys(), user_data)), 200
+                id = None
+
+        if((username is not None) or (id is not None)):                
+            user_data = get_user(username, id)
+            return dict(zip(user_data.keys(), user_data)), 200
+        else:
+            user_list = get_all_users()
+            user_data = dict()
+            for user in user_list:
+                u = dict(zip(user.keys(), user))
+                user_data[u['id']] = u 
+            return user_data
+        
 
     elif request.method == 'POST': #Atualização
         user_dict = {
@@ -289,7 +299,7 @@ def curs():
             if not (len(res)>0):
                 error = 'Curso não encontrado.'
         except Exception as e:
-            print('UPDATE CURS ERROR', e)
+            error = 'Curso não encontrado.'
             pass
 
         if error is None:
