@@ -211,6 +211,8 @@ def inst(inst_id=None):
 
 
     elif request.method == 'POST':
+        if cargo.lower() not in ['diretor', 'superintendente', 'debug']:
+            return {'message': 'Você não deveria estar aqui.'}, 403
         inst_dict = {
             'id': request.form['id'],
             'inst_type': request.form['inst_type'],
@@ -254,7 +256,7 @@ def curs():
 
     if request.method == 'PUT': #Cadastro
         if cargo.lower() not in ['diretor', 'superintendente', 'debug']:
-        return {'message': 'Você não deveria estar aqui.'}, 403
+            return {'message': 'Você não deveria estar aqui.'}, 403
         curs_dict = {
             'inst_id': request.form['inst_id'],
             'nome': request.form['nome'],
@@ -314,6 +316,8 @@ def curs():
         return dict(zip(curs_data.keys(), curs_data)), 200
 
     elif request.method == 'POST':
+        if cargo.lower() not in ['diretor', 'superintendente', 'debug']:
+            return {'message': 'Você não deveria estar aqui.'}, 403
         curs_dict = {
             'id': request.form['id'],
             'nome': request.form['nome'],
