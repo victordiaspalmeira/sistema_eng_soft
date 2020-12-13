@@ -2,7 +2,7 @@ import flask
 import sqlite3
 from sqlite3_manager import (
     create_connection, get_user, create_user, create_inst, create_curs, 
-    update_user, update_inst, update_curs, get_user, get_all_users, get_inst, get_curs
+    update_user, update_inst, update_curs, get_user, get_all_users, get_inst, get_curs, get_all_curs, get_all_insts
 )
 
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -110,9 +110,8 @@ def user():
             for user in user_list:
                 u = dict(zip(user.keys(), user))
                 user_data[u['id']] = u 
-            return user_data
+            return user_data, 200
         
-
     elif request.method == 'POST': #Atualização
         user_dict = {
             'id': request.form['id'],
@@ -185,6 +184,8 @@ def inst():
         return {'message': error}, 403
 
     elif request.method == 'GET':
+        cargo = request.form['cargo']
+        id = None
         try:
             nome = request.form['nome']
             id = None
@@ -193,9 +194,15 @@ def inst():
             try:
                 id = request.form['id']
             except:
-                return {'message': 'Insira uma chave para busca de instituição.'}, 403
-        inst_data = get_inst(nome, id)
-        return dict(zip(inst_data.keys(), inst_data)), 200    
+                pass
+        if (id is not None):
+            inst_data = get_inst(nome, id)
+            return dict(zip(inst_data.keys(), inst_data)), 200
+        else:
+            inst_list = get_all_insts(cargo)
+            print(inst_list)
+            return 'OK'
+
 
     elif request.method == 'POST':
         inst_dict = {
@@ -271,12 +278,29 @@ def curs():
         return {'message': error}, 403
 
     elif request.method == 'GET':
+        query_type = True
         try:
             nome = request.form['nome']
             inst_id = request.form['inst_id']
+            if((nome is not None) or (inst_id is not None)):
+                query_type = False
         except:
-            return {'message': 'Insira uma chave para busca de curso.'}, 403
-        curs_data = get_curs(nome, inst)
+            try:
+                inst_id = request.form['inst_id']
+                if inst_id is not None:
+                    query_type = True
+            except:
+                pass
+
+        if query_type:
+            curs_list = get_all_curs(inst_id)
+            curs_data = dict()
+            for curs in curs_list:
+                u = dict(zip(curs.keys(), curs))
+                curs_data[u['id']] = u
+            return curs_data
+        else:
+            curs_data = get_curs(nome, inst_id)
         return dict(zip(curs_data.keys(), curs_data)), 200
 
     elif request.method == 'POST':
@@ -311,7 +335,7 @@ def curs():
         return {'message': error}, 403
 
     else:
-        return {'message': 'NOT FOUND'}, 404.
+        return {'message': 'NOT FOUND'}, 404
 
 if __name__ == "__main__":
     app.run(debug=True)

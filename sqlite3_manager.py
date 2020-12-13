@@ -80,11 +80,14 @@ def get_inst(nome, id):
     inst = c.fetchone()
     return inst
 
-def get_all_insts():
+def get_all_insts(cargo):
     conn = create_connection('engsoft.db')
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
-    command = f"SELECT * FROM INST WHERE visivel = '1'"
+    if(cargo in ['superintendente']):
+        command = f"SELECT * FROM INST"
+    else:
+        command = f"SELECT * FROM INST  WHERE visivel = '1'"
     c.execute(command)
 
     return c.fetchall()  
@@ -126,6 +129,17 @@ def get_curs(nome, inst_id):
     command = f"SELECT * FROM CURS WHERE nome = '{nome}' AND inst_id = '{inst_id}'"
     c.execute(command)
     curs = c.fetchone()
+
+    return curs
+
+def get_all_curs(inst_id):
+    conn = create_connection('engsoft.db')
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+
+    command = f"SELECT * FROM CURS WHERE inst_id = '{inst_id}'"
+    c.execute(command)
+    curs = c.fetchall()
 
     return curs
 
