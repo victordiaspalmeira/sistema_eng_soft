@@ -200,8 +200,12 @@ def inst():
             return dict(zip(inst_data.keys(), inst_data)), 200
         else:
             inst_list = get_all_insts(cargo)
-            print(inst_list)
-            return 'OK'
+            inst_data = dict()
+            for inst in inst_list:
+                u = dict(zip(inst.keys(), inst))
+                inst_data[u['id']] = u
+            return inst_data
+
 
 
     elif request.method == 'POST':
