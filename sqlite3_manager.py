@@ -27,11 +27,19 @@ def get_user(username=None, id=None):
     user = c.fetchone()
     return user
 
-def get_all_users():
+def get_all_users(cargo, inst_id=None):
     conn = create_connection('engsoft.db')
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
-    command = f"SELECT * FROM USER"
+    #Filtragem por cargo
+    #1. Se for diretor, só poder ver usuários
+    if cargo.lower() == 'diretor':
+        command = f"SELECT * FROM USER WHERE id = '{inst_id}'"
+    if cargo.lower() in ['superintendente', 'debug']:
+        command = f"SELECT * FROM USER"
+    else:
+        return None
+
     c.execute(command)
     user_list = list()
     for user in c.fetchall():
@@ -68,7 +76,7 @@ def update_user(user_dict):
 
     return
 
-def get_inst(nome, id):
+def get_inst(nome=None, id=None):
     conn = create_connection('engsoft.db')
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
@@ -84,7 +92,7 @@ def get_all_insts(cargo):
     conn = create_connection('engsoft.db')
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
-    if(cargo in ['superintendente']):
+    if(cargo.lower() in ['superintendente', 'debug']):
         command = f"SELECT * FROM INST"
     else:
         command = f"SELECT * FROM INST  WHERE visivel = '1'"
@@ -172,3 +180,11 @@ def update_curs(curs_dict):
     conn.commit()
 
     return
+
+def get_user_cargo(user_id):
+    conn = create_connection('engsoft.db')
+    c = conn.cursor()
+    command = f"SELECT cargo from USER where ID = '{user_id}'"
+
+    c.execute(command)    
+    return c.fetchone()[0]

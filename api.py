@@ -2,7 +2,8 @@ import flask
 import sqlite3
 from sqlite3_manager import (
     create_connection, get_user, create_user, create_inst, create_curs, 
-    update_user, update_inst, update_curs, get_user, get_all_users, get_inst, get_curs, get_all_curs, get_all_insts
+    update_user, update_inst, update_curs, get_user, get_all_users, get_inst, get_curs, get_all_curs, get_all_insts,
+    get_user_cargo
 )
 
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -17,7 +18,11 @@ from flask_cors import (
 app = flask.Flask(__name__)
 CORS(app, support_credentials=True)
 app.config["DEBUG"] = True
-
+@app.route('/header/', methods=('GET','POST'))
+@app.route('/header/<user_id>', methods=('GET','POST'))
+@cross_origin(supports_credentials=True)
+def header_test(user_id=None):
+    return 'USER_ID: '+ str(user_id), 200
 
 @app.route('/login', methods=('GET','POST'))
 @cross_origin(supports_credentials=True)
@@ -52,12 +57,16 @@ def login():
     else:
         return {'message': 'NOT FOUND'}, 404
 
-@app.route('/user', methods=('PUT', 'GET','POST'))
+@app.route('/user/', methods=('PUT', 'GET','POST'))
+@app.route('/user/<user_id>', methods=('PUT', 'GET','POST'))
 @cross_origin(supports_credentials=True)
-def user():
+def user(user_id=None):
     conn = create_connection('engsoft.db')
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
+    _user_id = request.headers['authorization']
+    aux = get_user(id=_user_id)
+    cargo, inst_id = aux['cargo'], aux['inst_id']
 
     if request.method == 'PUT': #Cadastro
         user_dict = {
@@ -91,21 +100,11 @@ def user():
         return {'message': error}, 403
 
     elif request.method == 'GET': #Visualização
-        try:
-            username = request.form['username']
-            id = None
-        except:
-            username = None
-            try:
-                id = request.form['id']
-            except:
-                id = None
-
-        if((username is not None) or (id is not None)):                
-            user_data = get_user(username, id)
+        if user_id is not None:              
+            user_data = get_user(id=user_id)
             return dict(zip(user_data.keys(), user_data)), 200
         else:
-            user_list = get_all_users()
+            user_list = get_all_users(cargo, inst_id)
             user_data = dict()
             for user in user_list:
                 u = dict(zip(user.keys(), user))
@@ -146,12 +145,18 @@ def user():
     else:
         return {'message': 'NOT FOUND'}, 404
 
-@app.route('/inst', methods=('PUT', 'GET', 'POST'))
+@app.route('/inst/', methods=('PUT', 'GET', 'POST'))
+@app.route('/inst/<inst_id>', methods=('PUT', 'GET', 'POST'))
 @cross_origin(supports_credentials=True)
-def inst():
+def inst(inst_id=None):
     conn = create_connection('engsoft.db')
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
+    _user_id = request.headers['authorization']
+    aux = get_user(id=_user_id)
+    cargo, _inst_id = aux['cargo'], aux['inst_id']
+    if _user_id is None:
+        return {'message': 'FORBIDDEN'}, 403
     if request.method == 'PUT':
         inst_dict = {
             'inst_type': request.form['inst_type'],
@@ -184,26 +189,19 @@ def inst():
         return {'message': error}, 403
 
     elif request.method == 'GET':
-        cargo = request.form['cargo']
-        id = None
-        try:
-            nome = request.form['nome']
-            id = None
-        except:
-            nome = None
-            try:
-                id = request.form['id']
-            except:
-                pass
-        if (id is not None):
-            inst_data = get_inst(nome, id)
+        if (inst_id is not None):
+            inst_data = get_inst(id=inst_id)
             return dict(zip(inst_data.keys(), inst_data)), 200
         else:
             inst_list = get_all_insts(cargo)
             inst_data = dict()
             for inst in inst_list:
-                u = dict(zip(inst.keys(), inst))
-                inst_data[u['id']] = u
+                try:
+                    u = dict(zip(inst.keys(), inst))
+                    inst_data[u['id']] = u
+                except:
+                    inst_data = None
+            
             return inst_data
 
 
@@ -247,6 +245,8 @@ def curs():
     conn = create_connection('engsoft.db')
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
+    _user_id = request.headers['authorization']
+    cargo = get_user_cargo(_user_id)
 
     if request.method == 'PUT': #Cadastro
         curs_dict = {
