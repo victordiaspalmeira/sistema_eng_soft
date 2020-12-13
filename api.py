@@ -76,7 +76,6 @@ def user():
         try:
             c.execute(f"SELECT * FROM USER WHERE username = '{user_dict['username']}'")
             res = c.fetchall()
-            print(len(res))
             if (len(res)>0):
                 error = 'USER ALREADY REGISTERED.'
         except Exception as e:

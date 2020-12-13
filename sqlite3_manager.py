@@ -25,7 +25,6 @@ def get_user(username=None, id=None):
         command = f"SELECT * FROM USER WHERE id = '{id}'"
     c.execute(command)
     user = c.fetchone()
-    print(user)
     return user
 
 def get_all_users():
