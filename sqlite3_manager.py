@@ -79,6 +79,16 @@ def create_inst(inst_dict):
 
     return
 
+def update_inst(inst_dict):
+    conn = create_connection('engsoft.db')
+    c = conn.cursor()
+    command = f"UPDATE INST SET inst_type = '{inst_dict['inst_type']}', nome = '{inst_dict['nome']}', endereco = '{inst_dict['endereco']}', cidade = '{inst_dict['cidade']}', estado = '{inst_dict['estado']}', credenciamento = '{inst_dict['credenciamento']}', mantenedora = '{inst_dict['mantenedora']}' WHERE id = '{inst_dict['id']}'"
+
+    c.execute(command)    
+    conn.commit()
+
+    return
+
 def get_curs(nome, curs_id):
     conn = create_connection('engsoft.db')
     conn.row_factory = sqlite3.Row
@@ -104,6 +114,16 @@ def create_curs(curs_dict):
         curs_dict['obs']
     )
     c.execute(command, values)    
+    conn.commit()
+
+    return
+
+def update_curs(curs_dict):
+    conn = create_connection('engsoft.db')
+    c = conn.cursor()
+    command = f"UPDATE CURS SET nome = '{curs_dict['nome']}', grau = '{curs_dict['grau']}', codigo_emec = '{curs_dict['codigo_emec']}', ato_auto = '{curs_dict['ato_auto']}', ato_reco = '{curs_dict['ato_reco']}', ato_reno = '{curs_dict['ato_reno']}', renov = '{curs_dict['renov']}', obs = '{curs_dict['obs']}' WHERE id = '{curs_dict['id']}'"
+
+    c.execute(command)    
     conn.commit()
 
     return

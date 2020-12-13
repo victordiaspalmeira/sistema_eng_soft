@@ -85,7 +85,7 @@ if __name__ == "__main__":
     conn = create_connection('engsoft.db')
     #USER
     create_table_USER(conn)
-    #create_debug_user(conn)
+    create_debug_user(conn)
 
     #INST
     create_table_INST(conn)
