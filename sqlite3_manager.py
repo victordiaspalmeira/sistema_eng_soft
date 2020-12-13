@@ -1,5 +1,6 @@
 import sqlite3 
 from sqlite3 import Error
+from werkzeug.security import check_password_hash, generate_password_hash
 
 def create_connection(db_file):
     """ create a database connection to the SQLite database
