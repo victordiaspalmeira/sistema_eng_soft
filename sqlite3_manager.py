@@ -65,14 +65,17 @@ def update_user(user_dict):
 
     return
 
-def get_inst(nome):
+def get_inst(nome, id):
     conn = create_connection('engsoft.db')
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
-    command = f"SELECT * FROM INST WHERE nome = '{username}'"
+    if nome is not None:
+        command = f"SELECT * FROM INST WHERE nome = '{nome}'"
+    elif id is not None:
+        command = f"SELECT * FROM INST WHERE id = '{id}'"
     c.execute(command)
-
-    return c.fetchone()
+    inst = c.fetchone()
+    return inst
 
 def get_all_insts():
     conn = create_connection('engsoft.db')
@@ -112,14 +115,16 @@ def update_inst(inst_dict):
 
     return
 
-def get_curs(nome, curs_id):
+def get_curs(nome, inst_id):
     conn = create_connection('engsoft.db')
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
-    command = f"SELECT * FROM CURS WHERE nome = '{username}' AND inst_id = '{inst_id}'"
-    c.execute(command)
 
-    return c.fetchall() 
+    command = f"SELECT * FROM CURS WHERE nome = '{nome}' AND inst_id = '{inst_id}'"
+    c.execute(command)
+    curs = c.fetchone()
+
+    return curs
 
 
 def create_curs(curs_dict):

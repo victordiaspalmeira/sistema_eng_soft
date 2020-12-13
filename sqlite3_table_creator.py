@@ -69,7 +69,7 @@ def create_debug_user(conn):
     user_dict = {
         'inst_id': -1,
         'username': 'debug',
-        'password': generate_password_hash('debug'),
+        'password': 'debug',
         'nome': 'debug',
         'sobrenome': 'debug',
         'telefone': '71 99999999',
@@ -77,7 +77,7 @@ def create_debug_user(conn):
         'cargo': 'debug'
     }
     create_user(user_dict)
-
+    #
     return 
 
 if __name__ == "__main__":
