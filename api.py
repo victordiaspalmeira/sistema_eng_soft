@@ -65,7 +65,6 @@ def user(user_id=None):
     _user_id = request.headers['authorization']
     aux = get_user(id=_user_id)
     cargo, inst_id = aux['cargo'], aux['inst_id']
-
     if request.method == 'PUT': #Cadastro
         if cargo.lower() not in ['diretor', 'superintendente', 'debug']:
             return {'message': 'Acesso negado.'}, 403
@@ -106,6 +105,8 @@ def user(user_id=None):
         else:
             user_list = get_all_users(cargo, inst_id)
             user_data = dict()
+            if user_list == 'None':
+                return {'message': 'Dados não encontrados.'}, 403
             for user in user_list:
                 u = dict(zip(user.keys(), user))
                 user_data[u['id']] = u 

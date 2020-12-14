@@ -34,16 +34,15 @@ def get_all_users(cargo, inst_id=None):
     #Filtragem por cargo
     #1. Se for diretor, só poder ver usuários
     if cargo.lower() == 'diretor':
-        command = f"SELECT * FROM USER WHERE id = '{inst_id}'"
-    if cargo.lower() in ['superintendente', 'debug']:
+        command = f"SELECT * FROM USER WHERE inst_id = '{inst_id}'"
+    elif cargo.lower() in ['superintendente', 'debug']:
         command = f"SELECT * FROM USER"
     else:
-        return None
+        return 'None'
 
     c.execute(command)
     user_list = list()
     for user in c.fetchall():
-        print(user)
         user_list.append(user)
     return user_list
 
