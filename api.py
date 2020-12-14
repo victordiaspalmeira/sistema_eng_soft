@@ -18,7 +18,6 @@ from flask_cors import (
 app = flask.Flask(__name__)
 CORS(app, support_credentials=True)
 app.config["DEBUG"] = True
-@app.route('/header/', methods=('GET','POST'))
 @app.route('/header/<user_id>', methods=('GET','POST'))
 @cross_origin(supports_credentials=True)
 def header_test(user_id=None):
@@ -57,7 +56,6 @@ def login():
     else:
         return {'message': 'NOT FOUND'}, 404
 
-@app.route('/user/', methods=('PUT', 'GET','POST'))
 @app.route('/user/<user_id>', methods=('PUT', 'GET','POST'))
 @cross_origin(supports_credentials=True)
 def user(user_id=None):
@@ -102,7 +100,7 @@ def user(user_id=None):
         return {'message': error}, 403
 
     elif request.method == 'GET': #Visualização
-        if user_id is not None:              
+        if user_id is not 'all':              
             user_data = get_user(id=user_id)
             return dict(zip(user_data.keys(), user_data)), 200
         else:
@@ -147,7 +145,6 @@ def user(user_id=None):
     else:
         return {'message': 'NOT FOUND'}, 404
 
-@app.route('/inst/', methods=('PUT', 'GET', 'POST'))
 @app.route('/inst/<inst_id>', methods=('PUT', 'GET', 'POST'))
 @cross_origin(supports_credentials=True)
 def inst(inst_id=None):
@@ -193,7 +190,7 @@ def inst(inst_id=None):
         return {'message': error}, 403
 
     elif request.method == 'GET':
-        if (inst_id is not None):
+        if (inst_id is not 'all'):
             inst_data = get_inst(id=inst_id)
             return dict(zip(inst_data.keys(), inst_data)), 200
         else:
@@ -245,7 +242,6 @@ def inst(inst_id=None):
                 print('EXCEPTION', e)
         return {'message': error}, 403    
 
-@app.route('/curs', methods=('PUT', 'GET', 'POST'))
 @app.route('/curs/<curs_id>', methods=('PUT', 'GET', 'POST'))
 @cross_origin(supports_credentials=True)
 def curs(curs_id=None):
@@ -291,7 +287,7 @@ def curs(curs_id=None):
         return {'message': error}, 403
 
     elif request.method == 'GET':
-        if (curs_id is not None):
+        if (curs_id is not 'all'):
             curs_data = get_curs(curs_id)
             return dict(zip(curs_data.keys(), curs_data)), 200
         else:
