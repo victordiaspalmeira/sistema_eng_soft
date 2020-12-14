@@ -3,7 +3,7 @@ import sqlite3
 from sqlite3_manager import (
     create_connection, get_user, create_user, create_inst, create_curs, 
     update_user, update_inst, update_curs, get_user, get_all_users, get_inst, get_curs, get_all_curs, get_all_insts,
-    get_user_cargo
+    get_user_cargo, remove_user
 )
 
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -145,6 +145,25 @@ def user(user_id=None):
 
     else:
         return {'message': 'NOT FOUND'}, 404
+
+@app.route('/delete_user/<user_id>', methods=('PUT', 'GET','POST'))
+@cross_origin(supports_credentials=True)
+def delete_user(user_id=None):
+    _user_id = request.headers['authorization']
+    aux = get_user(id=_user_id)
+    try:
+        cargo, _inst_id = aux['cargo'], aux['inst_id']
+    except:
+        return {'message': 'Acesso negado.'}, 403
+    if cargo.lower() not in ['diretor', 'superintendente', 'debug']:
+        return {'message': 'Acesso negado.'}, 403
+    else:
+        if request.method == 'PUT':
+            remove_user(user_id)
+            return {'message': 'Usuário deletado.'}, 200
+        else:
+            return {'message': 'Acesso negado.'}, 403
+
 
 @app.route('/inst/<inst_id>', methods=('PUT', 'GET', 'POST'))
 @cross_origin(supports_credentials=True)

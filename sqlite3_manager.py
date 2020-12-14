@@ -75,6 +75,17 @@ def update_user(user_dict):
 
     return
 
+def remove_user(user_id):
+    conn = create_connection('engsoft.db')
+    c = conn.cursor()
+    command = f"DELETE FROM USER WHERE id = {user_id}"
+
+    c.execute(command)    
+    conn.commit()
+
+    return
+        
+
 def get_inst(nome=None, id=None):
     conn = create_connection('engsoft.db')
     conn.row_factory = sqlite3.Row
