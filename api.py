@@ -68,7 +68,7 @@ def user(user_id=None):
 
     if request.method == 'PUT': #Cadastro
         if cargo.lower() not in ['diretor', 'superintendente', 'debug']:
-            return {'message': 'Você não deveria estar aqui.'}, 403
+            return {'message': 'Acesso negado.'}, 403
         user_dict = {
             'inst_id': request.form['inst_id'],
             'username': request.form['username'],
@@ -129,7 +129,7 @@ def user(user_id=None):
             res = c.fetchall()
             print(len(res))
             if not (len(res)>0):
-                error = 'Usuário não encontrado..'
+                error = 'Usuário não encontrado.'
         except Exception as e:
             print('UPDATE USER ERROR', e)
             pass
@@ -158,7 +158,7 @@ def inst(inst_id=None):
         return {'message': 'FORBIDDEN'}, 403
     if request.method == 'PUT':
         if cargo.lower() not in ['dirigente institucional', 'superintendente', 'debug']:
-            return {'message': 'Você não deveria estar aqui.'}, 403
+            return {'message': 'Acesso negado aqui.'}, 403
         inst_dict = {
             'inst_type': request.form['inst_type'],
             'visivel': request.form['visivel'],
@@ -176,7 +176,7 @@ def inst(inst_id=None):
             c.execute(f"SELECT * FROM INST WHERE nome = '{inst_dict['nome']}'")
             res = c.fetchall()
             if (len(res)>0):
-                error = 'instituição já cadastrada.'
+                error = 'Instituição já cadastrada.'
         except Exception as e:
             print(e)
             pass
@@ -210,7 +210,7 @@ def inst(inst_id=None):
 
     elif request.method == 'POST':
         if cargo.lower() not in ['diretor', 'superintendente', 'debug']:
-            return {'message': 'Você não deveria estar aqui.'}, 403
+            return {'message': 'Acesso negado aqui.'}, 403
         inst_dict = {
             'id': request.form['id'],
             'inst_type': request.form['inst_type'],
@@ -254,7 +254,7 @@ def curs(curs_id=None):
 
     if request.method == 'PUT': #Cadastro
         if cargo.lower() not in ['diretor', 'superintendente', 'debug']:
-            return {'message': 'Você não deveria estar aqui.'}, 403
+            return {'message': 'Acesso negado aqui.'}, 403
         curs_dict = {
             'inst_id': request.form['inst_id'],
             'nome': request.form['nome'],
@@ -303,7 +303,7 @@ def curs(curs_id=None):
 
     elif request.method == 'POST':
         if cargo.lower() not in ['diretor', 'superintendente', 'debug']:
-            return {'message': 'Você não deveria estar aqui.'}, 403
+            return {'message': 'Acesso negado aqui.'}, 403
         curs_dict = {
             'id': request.form['id'],
             'nome': request.form['nome'],
