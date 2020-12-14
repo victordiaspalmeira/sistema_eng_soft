@@ -246,8 +246,9 @@ def inst(inst_id=None):
         return {'message': error}, 403    
 
 @app.route('/curs', methods=('PUT', 'GET', 'POST'))
+@app.route('/curs/<curs_id>', methods=('PUT', 'GET', 'POST'))
 @cross_origin(supports_credentials=True)
-def curs():
+def curs(curs_id=None):
     conn = create_connection('engsoft.db')
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
@@ -290,30 +291,16 @@ def curs():
         return {'message': error}, 403
 
     elif request.method == 'GET':
-        query_type = True
-        try:
-            nome = request.form['nome']
-            inst_id = request.form['inst_id']
-            if((nome is not None) or (inst_id is not None)):
-                query_type = False
-        except:
-            try:
-                inst_id = request.form['inst_id']
-                if inst_id is not None:
-                    query_type = True
-            except:
-                pass
-
-        if query_type:
+        if (curs_id is not None):
+            curs_data = get_curs(curs_id)
+            return dict(zip(curs_data.keys(), curs_data)), 200
+        else:
             curs_list = get_all_curs(inst_id)
             curs_data = dict()
             for curs in curs_list:
                 u = dict(zip(curs.keys(), curs))
                 curs_data[u['id']] = u
             return curs_data
-        else:
-            curs_data = get_curs(nome, inst_id)
-        return dict(zip(curs_data.keys(), curs_data)), 200
 
     elif request.method == 'POST':
         if cargo.lower() not in ['diretor', 'superintendente', 'debug']:
@@ -352,4 +339,4 @@ def curs():
         return {'message': 'NOT FOUND'}, 404
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)

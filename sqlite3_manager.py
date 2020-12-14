@@ -129,12 +129,12 @@ def update_inst(inst_dict):
 
     return
 
-def get_curs(nome, inst_id):
+def get_curs(curs_id):
     conn = create_connection('engsoft.db')
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
 
-    command = f"SELECT * FROM CURS WHERE nome = '{nome}' AND inst_id = '{inst_id}'"
+    command = f"SELECT * FROM CURS WHERE id = '{curs_id}'"
     c.execute(command)
     curs = c.fetchone()
 
