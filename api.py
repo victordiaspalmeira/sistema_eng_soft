@@ -292,9 +292,11 @@ def curs(curs_id=None):
             curs_data = get_curs(curs_id)
             return dict(zip(curs_data.keys(), curs_data)), 200
         else:
+            inst_id = request.form['inst_id']
             curs_list = get_all_curs(inst_id)
             curs_data = dict()
             for curs in curs_list:
+                
                 u = dict(zip(curs.keys(), curs))
                 curs_data[u['id']] = u
             return curs_data
