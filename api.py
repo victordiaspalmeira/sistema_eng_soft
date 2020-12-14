@@ -42,7 +42,7 @@ def login():
             command = f"SELECT * FROM USER WHERE username = '{username}'"
             c.execute(command)
             user = get_user(username)
-
+            
             if user is None:
                 error = 'Nome de usuário não encontrado.'
             elif not check_password_hash(user['password'], password):
@@ -50,7 +50,7 @@ def login():
 
         if error is None:
             #Dicionário
-            return {'id': user['id'], 'cargo': user['cargo']}
+            return dict(zip(user.keys(), user)), 200
         else:
             return {'message': error}, 403
     else:
