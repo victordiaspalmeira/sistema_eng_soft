@@ -184,7 +184,7 @@ def inst(inst_id=None):
         if error is None:
             try:
                 create_inst(inst_dict)
-                return {'message': 'REGISTERED'}, 200
+                return {'message': 'Instituição cadastrada com sucesso!'}, 200
             except Exception as e:
                 print('EXCEPTION', e)
         return {'message': error}, 403
@@ -238,7 +238,7 @@ def inst(inst_id=None):
         if error is None:
             try:
                 update_inst(inst_dict)
-                return {'message': 'Instituição atualizada.'}, 200 
+                return {'message': 'Instituição atualizada com sucesso!'}, 200 
             except Exception as e:
                 print('EXCEPTION', e)
         return {'message': error}, 403    
@@ -282,7 +282,7 @@ def curs(curs_id=None):
         if error is None:
             try:
                 create_curs(curs_dict)
-                return {'message': 'Cadastrado com sucesso!'}, 200
+                return {'message': 'Curso cadastrado com sucesso!'}, 200
             except Exception as e:
                 print('EXCEPTION', e)
         return {'message': error}, 403
@@ -292,7 +292,7 @@ def curs(curs_id=None):
             curs_data = get_curs(curs_id)
             return dict(zip(curs_data.keys(), curs_data)), 200
         else:
-            inst_id = request.form['inst_id']
+            inst_id = request.args.get('inst_id')
             curs_list = get_all_curs(inst_id)
             curs_data = dict()
             for curs in curs_list:
@@ -329,7 +329,7 @@ def curs(curs_id=None):
         if error is None:
             try:
                 update_curs(curs_dict)
-                return {'message': 'Curso atualizado com sucesso.'}, 200
+                return {'message': 'Curso atualizado com sucesso!'}, 200
             except Exception as e:
                 print('EXCEPTION', e)
         return {'message': error}, 403
