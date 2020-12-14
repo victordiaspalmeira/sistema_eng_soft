@@ -272,9 +272,9 @@ def curs(curs_id=None):
     _user_id = request.headers['authorization']
     aux = get_user(id=_user_id)
     cargo, _inst_id = aux['cargo'], aux['inst_id']
-
+    print('----------------',cargo)
     if request.method == 'PUT': #Cadastro
-        if cargo.lower() not in ['diretor', 'superintendente', 'debug']:
+        if cargo.lower() not in ['funcionario','funcionário', 'diretor', 'superintendente', 'debug']:
             return {'message': 'Acesso negado aqui.'}, 403
         curs_dict = {
             'inst_id': request.form['inst_id'],
