@@ -250,7 +250,8 @@ def curs(curs_id=None):
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
     _user_id = request.headers['authorization']
-    cargo = get_user_cargo(_user_id)
+    aux = get_user(id=_user_id)
+    cargo, _inst_id = aux['cargo'], aux['inst_id']
 
     if request.method == 'PUT': #Cadastro
         if cargo.lower() not in ['diretor', 'superintendente', 'debug']:
@@ -288,11 +289,14 @@ def curs(curs_id=None):
         return {'message': error}, 403
 
     elif request.method == 'GET':
-        if (str(curs_id) != 'all'):
+        if (curs_id != 'all'):
             curs_data = get_curs(curs_id)
             return dict(zip(curs_data.keys(), curs_data)), 200
         else:
             inst_id = request.args.get('inst_id')
+            if inst_id is None:
+                inst_id = _inst_id
+                print(inst_id)
             curs_list = get_all_curs(inst_id)
             curs_data = dict()
             for curs in curs_list:
