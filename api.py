@@ -100,7 +100,7 @@ def user(user_id=None):
         return {'message': error}, 403
 
     elif request.method == 'GET': #Visualização
-        if user_id is not 'all':              
+        if str(user_id) != 'all':              
             user_data = get_user(id=user_id)
             return dict(zip(user_data.keys(), user_data)), 200
         else:
@@ -190,7 +190,8 @@ def inst(inst_id=None):
         return {'message': error}, 403
 
     elif request.method == 'GET':
-        if (inst_id is not 'all'):
+
+        if (str(inst_id) != 'all'):
             inst_data = get_inst(id=inst_id)
             return dict(zip(inst_data.keys(), inst_data)), 200
         else:
@@ -287,7 +288,7 @@ def curs(curs_id=None):
         return {'message': error}, 403
 
     elif request.method == 'GET':
-        if (curs_id is not 'all'):
+        if (str(curs_id) != 'all'):
             curs_data = get_curs(curs_id)
             return dict(zip(curs_data.keys(), curs_data)), 200
         else:
