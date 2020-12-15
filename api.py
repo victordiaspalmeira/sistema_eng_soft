@@ -3,7 +3,7 @@ import sqlite3
 from sqlite3_manager import (
     create_connection, get_user, create_user, create_inst, create_curs, 
     update_user, update_inst, update_curs, get_user, get_all_users, get_inst, get_curs, get_all_curs, get_all_insts,
-    get_user_cargo, remove_user
+    get_user_cargo, remove_user, remove_inst, remove_curs
 )
 
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -246,7 +246,7 @@ def inst(inst_id=None):
                 print('EXCEPTION', e)
         return {'message': error}, 403    
 
-    elif request.method == 'DELETE:
+    elif request.method == 'DELETE':
         if cargo.lower() not in ['diretor', 'superintendente', 'dirigente instituicional', 'debug']:
                 return {'message': 'Acesso negado.'}, 403
         else:
@@ -264,7 +264,6 @@ def curs(curs_id=None):
     _user_id = request.headers['authorization']
     aux = get_user(id=_user_id)
     cargo, _inst_id = aux['cargo'], aux['inst_id']
-    print('----------------',cargo)
     if request.method == 'PUT': #Cadastro
         if cargo.lower() not in ['funcionario','funcionário', 'diretor', 'superintendente', 'debug']:
             return {'message': 'Acesso negado aqui.'}, 403
@@ -350,13 +349,13 @@ def curs(curs_id=None):
                 print('EXCEPTION', e)
         return {'message': error}, 403
 
-    elif request.method == 'DELETE:
+    elif request.method == 'DELETE':
         if cargo.lower() not in ['diretor', 'superintendente', 'debug']:
                 return {'message': 'Acesso negado.'}, 403
         else:
             remove_curs(curs_id)
             return {'message': 'Curso deletado.'}, 200          
     else:
-
+        return {'message': 'NOT FOUND'}, 404
 if __name__ == "__main__":
     app.run(debug=False)
