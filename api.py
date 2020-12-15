@@ -18,10 +18,6 @@ from flask_cors import (
 app = flask.Flask(__name__)
 CORS(app, support_credentials=True)
 app.config["DEBUG"] = True
-@app.route('/header/<user_id>', methods=('GET','POST'))
-@cross_origin(supports_credentials=True)
-def header_test(user_id=None):
-    return 'USER_ID: '+ str(user_id), 200
 
 @app.route('/login', methods=('GET','POST'))
 @cross_origin(supports_credentials=True)
@@ -154,19 +150,7 @@ def user(user_id=None):
     else:
         return {'message': 'NOT FOUND'}, 404
 
-@app.route('/delete_user/<user_id>', methods=('PUT', 'GET','POST'))
-@cross_origin(supports_credentials=True)
-def delete_user(user_id=None):
-    _user_id = request.headers['authorization']
-    aux = get_user(id=_user_id)
-    try:
-        cargo, _inst_id = aux['cargo'], aux['inst_id']
-    except:
-        return {'message': 'Acesso negado.'}, 403
-    
-
-
-@app.route('/inst/<inst_id>', methods=('PUT', 'GET', 'POST'))
+@app.route('/inst/<inst_id>', methods=('PUT', 'GET', 'POST', 'DELETE'))
 @cross_origin(supports_credentials=True)
 def inst(inst_id=None):
     conn = create_connection('engsoft.db')
@@ -227,8 +211,6 @@ def inst(inst_id=None):
             
             return inst_data
 
-
-
     elif request.method == 'POST':
         if cargo.lower() not in ['diretor', 'superintendente', 'debug']:
             return {'message': 'Acesso negado aqui.'}, 403
@@ -264,7 +246,16 @@ def inst(inst_id=None):
                 print('EXCEPTION', e)
         return {'message': error}, 403    
 
-@app.route('/curs/<curs_id>', methods=('PUT', 'GET', 'POST'))
+    elif request.method == 'DELETE:
+        if cargo.lower() not in ['diretor', 'superintendente', 'dirigente instituicional', 'debug']:
+                return {'message': 'Acesso negado.'}, 403
+        else:
+            remove_inst(inst_id)
+            return {'message': 'Instituição deletada.'}, 200          
+    else:
+        return {'message': 'NOT FOUND'}, 404
+
+@app.route('/curs/<curs_id>', methods=('PUT', 'GET', 'POST', 'DELETE'))
 @cross_origin(supports_credentials=True)
 def curs(curs_id=None):
     conn = create_connection('engsoft.db')
@@ -359,8 +350,13 @@ def curs(curs_id=None):
                 print('EXCEPTION', e)
         return {'message': error}, 403
 
+    elif request.method == 'DELETE:
+        if cargo.lower() not in ['diretor', 'superintendente', 'debug']:
+                return {'message': 'Acesso negado.'}, 403
+        else:
+            remove_curs(curs_id)
+            return {'message': 'Curso deletado.'}, 200          
     else:
-        return {'message': 'NOT FOUND'}, 404
 
 if __name__ == "__main__":
     app.run(debug=False)

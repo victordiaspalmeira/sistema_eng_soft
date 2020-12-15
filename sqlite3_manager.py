@@ -139,6 +139,16 @@ def update_inst(inst_dict):
 
     return
 
+def remove_inst(inst_id):
+    conn = create_connection('engsoft.db')
+    c = conn.cursor()
+    command = f"DELETE FROM INST WHERE id = {inst_id}"
+
+    c.execute(command)    
+    conn.commit()
+
+    return
+
 def get_curs(curs_id):
     conn = create_connection('engsoft.db')
     conn.row_factory = sqlite3.Row
@@ -190,6 +200,15 @@ def update_curs(curs_dict):
     conn.commit()
 
     return
+
+def remove_curs(curs_id):
+    conn = create_connection('engsoft.db')
+    c = conn.cursor()
+    command = f"DELETE FROM CURS WHERE id = {curs_id}"
+
+    c.execute(command)    
+    conn.commit()
+
 
 def get_user_cargo(user_id):
     conn = create_connection('engsoft.db')
