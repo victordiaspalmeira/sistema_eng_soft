@@ -56,7 +56,7 @@ def login():
     else:
         return {'message': 'NOT FOUND'}, 404
 
-@app.route('/user/<user_id>', methods=('PUT', 'GET','POST'))
+@app.route('/user/<user_id>', methods=('PUT', 'GET','POST', 'DELETE'))
 @cross_origin(supports_credentials=True)
 def user(user_id=None):
     conn = create_connection('engsoft.db')
@@ -74,6 +74,7 @@ def user(user_id=None):
             'password': request.form['password'],
             'nome': request.form['nome'],
             'sobrenome': request.form['sobrenome'],
+            'cpf': request.form['cpf'],
             'telefone': request.form['telefone'],
             'email': request.form['email'],
             'cargo': request.form['cargo']
@@ -118,6 +119,7 @@ def user(user_id=None):
             'inst_id': request.form['inst_id'],
             'nome': request.form['nome'],
             'sobrenome': request.form['sobrenome'],
+            'cpf': request.form['cpf'],
             'telefone': request.form['telefone'],
             'email': request.form['email'],
             'cargo': request.form['cargo']
@@ -143,6 +145,12 @@ def user(user_id=None):
                 print('EXCEPTION', e)
         return {'message': error}, 403
 
+    elif request.method == 'DELETE':
+        if cargo.lower() not in ['diretor', 'superintendente', 'debug']:
+                return {'message': 'Acesso negado.'}, 403
+        else:
+            remove_user(user_id)
+            return {'message': 'Usuário deletado.'}, 200  
     else:
         return {'message': 'NOT FOUND'}, 404
 
@@ -155,14 +163,7 @@ def delete_user(user_id=None):
         cargo, _inst_id = aux['cargo'], aux['inst_id']
     except:
         return {'message': 'Acesso negado.'}, 403
-    if cargo.lower() not in ['diretor', 'superintendente', 'debug']:
-        return {'message': 'Acesso negado.'}, 403
-    else:
-        if request.method == 'PUT':
-            remove_user(user_id)
-            return {'message': 'Usuário deletado.'}, 200
-        else:
-            return {'message': 'Acesso negado.'}, 403
+    
 
 
 @app.route('/inst/<inst_id>', methods=('PUT', 'GET', 'POST'))

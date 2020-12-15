@@ -9,6 +9,7 @@ def create_table_USER(conn):
                     username TEXT UNIQUE NOT NULL,
                     password TEXT NOT NULL,
                     nome TEXT NOT NULL,
+                    CPF TEXT NOT NULL,
                     sobrenome TEXT NOT NULL,
                     telefone TEXT NOT NULL,
                     email TEXT NOT NULL,
