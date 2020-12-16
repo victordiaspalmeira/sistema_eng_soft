@@ -136,7 +136,7 @@ def user(user_id=None):
         if error is None:
             try:
                 update_user(user_dict)
-                return 'Usuário atualizado com sucesso!'
+                return {'message':'Usuário atualizado com sucesso!'}, 200
             except Exception as e:
                 print('EXCEPTION', e)
         return {'message': error}, 403
@@ -335,21 +335,12 @@ def curs(curs_id=None):
         }
         error = None    
 
-        try:
-            res = get_curs(curs_dict['nome'], curs_dict['id'])
-    
-            if not (len(res)>0):
-                error = 'Curso não encontrado.'
-        except Exception as e:
-            error = 'Curso não encontrado.'
-            pass
-
         if error is None:
             try:
                 update_curs(curs_dict)
                 return {'message': 'Curso atualizado com sucesso!'}, 200
             except Exception as e:
-                print('EXCEPTION', e)
+                print('Falha ao atualizar o curso.', e)
         return {'message': error}, 403
 
     elif request.method == 'DELETE':
