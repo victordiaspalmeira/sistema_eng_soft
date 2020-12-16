@@ -49,13 +49,14 @@ def get_all_users(cargo, inst_id=None):
 def create_user(user_dict):
     conn = create_connection('engsoft.db')
     c = conn.cursor()
-    command = f"INSERT INTO USER (inst_id, username, password, nome, sobrenome, telefone, email, cargo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+    command = f"INSERT INTO USER (inst_id, username, password, nome, sobrenome, cpf, telefone, email, cargo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
     values = (
         user_dict['inst_id'],
         user_dict['username'],
         generate_password_hash(user_dict['password']),
         user_dict['nome'],
         user_dict['sobrenome'],
+        user_dict['cpf'],
         user_dict['telefone'],
         user_dict['email'],
         user_dict['cargo']
@@ -68,7 +69,7 @@ def create_user(user_dict):
 def update_user(user_dict):
     conn = create_connection('engsoft.db')
     c = conn.cursor()
-    command = f"UPDATE USER SET inst_id = '{user_dict['inst_id']}', nome = '{user_dict['nome']}', sobrenome = '{user_dict['sobrenome']}', telefone = '{user_dict['telefone']}', email = '{user_dict['email']}', cargo = '{user_dict['cargo']}' WHERE id = '{user_dict['id']}'"
+    command = f"UPDATE USER SET inst_id = '{user_dict['inst_id']}', nome = '{user_dict['nome']}', sobrenome = '{user_dict['sobrenome']}', cpf = {user_dict['cpf']}, telefone = '{user_dict['telefone']}', email = '{user_dict['email']}', cargo = '{user_dict['cargo']}' WHERE id = '{user_dict['id']}'"
 
     c.execute(command)    
     conn.commit()

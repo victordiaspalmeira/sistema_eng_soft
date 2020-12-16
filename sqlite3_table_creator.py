@@ -9,7 +9,7 @@ def create_table_USER(conn):
                     username TEXT UNIQUE NOT NULL,
                     password TEXT NOT NULL,
                     nome TEXT NOT NULL,
-                    CPF TEXT NOT NULL,
+                    cpf TEXT NOT NULL,
                     sobrenome TEXT NOT NULL,
                     telefone TEXT NOT NULL,
                     email TEXT NOT NULL,
@@ -73,6 +73,7 @@ def create_debug_user(conn):
         'password': 'debug',
         'nome': 'debug',
         'sobrenome': 'debug',
+        'cpf': '06006006006',
         'telefone': '71 99999999',
         'email': 'debug@debug.com',
         'cargo': 'debug'
